@@ -51,7 +51,8 @@ defmodule OcppChargerNerves.MixProject do
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.9", targets: @all_targets},
-      {:nerves_init_gadget, "~> 0.4", targets: @all_targets},
+      {:nerves_pack, "~> 0.4.1", targets: @all_targets},
+      #{:nerves_init_gadget, "~> 0.4", targets: @all_targets},
       {:scenic_driver_nerves_rpi, "~> 0.10", targets: @all_targets},
       {:scenic_driver_nerves_touch, "~> 0.10", targets: @all_targets},
       {:scenic_driver_waveshare, path: "../scenic_driver_waveshare", targets: @all_targets},

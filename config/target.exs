@@ -15,7 +15,7 @@ if keys == [],
     See your project's config/target.exs for this error message.
     """)
 
-config :nerves_firmware_ssh,
+config :nerves_ssh,
   authorized_keys: Enum.map(keys, &File.read!/1)
 
 
@@ -23,12 +23,12 @@ config :nerves_firmware_ssh,
 # Only enable this for prod if you understand the risks.
 node_name = if Mix.env() != :prod, do: "ocpp_charger_nerves"
 
-config :nerves_init_gadget,
-  ifname: "eth0",
-  address_method: :dhcp,
-  mdns_domain: "nerves.local",
-  node_name: node_name,
-  node_host: :mdns_domain
+# config :nerves_init_gadget,
+#   ifname: "eth0",
+#   address_method: :dhcp,
+#   mdns_domain: "nerves.local",
+#   node_name: node_name,
+#   node_host: :mdns_domain
 
 config :mdns_lite,
   host: [:hostname, "ocpp_charger_nerves"],
