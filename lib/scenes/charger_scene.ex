@@ -3,14 +3,12 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   alias Scenic.Graph
   alias OcppChargerNerves.Charger, as: Charger
   import Scenic.Primitives
-  import Logger
 
   @target System.get_env("MIX_TARGET") || "host"
 
-  @x_div 53
   @y_div 17
   @x_wid 128
-  @y_wid 128
+  #@y_wid 128
 
   @update_interval 1000
   @update_energy 0.003  # energy charged/second for a 11Kwh
@@ -38,16 +36,15 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
         |> group(
           fn g ->
             g
-            |> text("Serial #{serial}",      translate: {0,12})
-            |> text("State  #{status}",      translate: {0,24})
+            |> text("Serial #{serial}", translate: {0,12})
+            |> text("State  #{status}", translate: {0,24})
             |> text("Energy #{Float.round(energy, 2)} kWh",  translate: {0,36})
-            |> text("Time   #{time}",        translate: {0,48})
+            |> text("Time   #{time}", translate: {0,48})
           end,
           t: {3,20}
         )
   end
 
-  # --------------------------------------------------------
   def init(_, _opts) do
     charger = %Charger{serial: "NC-0001", status: "Available", energy: 0.0, time: "00:00:00", connected: false}
 
@@ -60,7 +57,6 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   end
 
   def handle_input(input, _context, state) do
-    Logger.debug(inspect(input))
     {charger, _graph} = state
     # 1 = Cable insert # 2 swipe
     new_charger = case input do
@@ -80,17 +76,13 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   def handle_info(:update, state) do
     Process.send_after(self(), :update, @update_interval)
 
-    Logger.debug(inspect(state))
-
-    {charger, graph} = state
+    {charger, _graph} = state
 
     new_charger = case charger.status do
-      "Charging" -> %{charger | energy: add_energy(charger, @update_energy), time: add_time(charger, 1)  }
+      "Charging" -> %{charger | energy: add_energy(charger, @update_energy), time: add_time(charger, @update_interval)  }
       "Available" -> %{charger | energy: 0.0, time: "00:00:00"}
       _ -> charger
     end
-
-    Logger.debug(inspect(new_charger))
 
     new_graph = build_graph(new_charger.serial, new_charger.status, new_charger.energy, new_charger.time, new_charger.connected)
 
@@ -102,7 +94,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   end
 
   defp add_time(charger, value) do
-    [h|t] = Time.from_iso8601!(charger.time) |> Time.add(value) |> Time.to_iso8601() |> String.split(".")
-    h
+    [head|_] = Time.from_iso8601!(charger.time) |> Time.add(value, :millisecond) |> Time.to_iso8601() |> String.split(".")
+    head
   end
 end
