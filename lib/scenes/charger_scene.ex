@@ -10,12 +10,13 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   @x_wid 128
   #@y_wid 128
 
-  @update_interval 1000
-  @update_energy 0.003  # energy charged/second for a 11Kwh
+  @charge_speed 11 # kWh\
+  @update_interval 1000 # milliseconds
+  @update_energy @charge_speed / 3600  # kWh energy charged/second
 
-  @spec build_graph(String.t(), String.t(), float(), String.t(), boolean()) :: Scenic.Graph.t()
-  def build_graph(serial, status, energy, time, connected) do
-    connect_icon = case connected do
+  @spec build_graph(%Charger{}) :: Scenic.Graph.t()
+  def build_graph(charger) do
+    connect_icon = case charger.connected do
       true -> "v"
       false -> "x"
     end
@@ -36,10 +37,11 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
         |> group(
           fn g ->
             g
-            |> text("Serial #{serial}", translate: {0,12})
-            |> text("State  #{status}", translate: {0,24})
-            |> text("Energy #{Float.round(energy, 2)} kWh",  translate: {0,36})
-            |> text("Time   #{time}", translate: {0,48})
+            |> text("Serial #{charger.serial}", translate: {0,12})
+            |> text("Status #{charger.status}", translate: {0,24})
+            |> text("Energy #{Float.round(charger.energy, 2)} kWh",  translate: {0,40})
+            |> text("Time   #{charger.time}", translate: {0,52})
+            |> text("Speed  #{@charge_speed} kWh", translate: {0,68})
           end,
           t: {3,20}
         )
@@ -48,7 +50,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   def init(_, _opts) do
     charger = %Charger{serial: "NC-0001", status: "Available", energy: 0.0, time: "00:00:00", connected: false}
 
-    graph = build_graph(charger.serial, charger.status, charger.energy, charger.time, charger.connected)
+    graph = build_graph(charger)
               |> Graph.modify(:device_list, &update_opts(&1, hidden: @target == "host"))
 
     Process.send_after(self(), :update, 100)
@@ -58,7 +60,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
 
   def handle_input(input, _context, state) do
     {charger, _graph} = state
-    # 1 = Cable insert # 2 swipe
+    # 1 = Cable insert, 2 swipe, 3 connect
     new_charger = case input do
       {:key, {"1", :press, _}}        -> Charger.toggle_cable(charger)
       {:key, {:button_1, :press, _}}  -> Charger.toggle_cable(charger)
@@ -69,7 +71,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
       _ -> charger
     end
 
-    new_graph = build_graph(new_charger.serial, new_charger.status, new_charger.energy, new_charger.time, new_charger.connected)
+    new_graph = build_graph(charger)
     {:noreply, {new_charger, new_graph}, push: new_graph}
   end
 
@@ -84,7 +86,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
       _ -> charger
     end
 
-    new_graph = build_graph(new_charger.serial, new_charger.status, new_charger.energy, new_charger.time, new_charger.connected)
+    new_graph = build_graph(charger)
 
     {:noreply, {new_charger, new_graph}, push: new_graph}
   end
