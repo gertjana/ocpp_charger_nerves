@@ -45,6 +45,7 @@ defmodule OcppChargerNerves.MixProject do
       {:toolshed, "~> 0.2"},
       {:scenic, "~> 0.10"},
       {:scenic_sensor, "~> 0.7"},
+      {:ocpp_model, path: "../ocpp_model"},
 
       # Dependencies for only the :host
       {:scenic_driver_glfw, "~> 0.10", targets: :host},
