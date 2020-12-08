@@ -23,13 +23,6 @@ config :nerves_ssh,
 # Only enable this for prod if you understand the risks.
 node_name = if Mix.env() != :prod, do: "ocpp_charger_nerves"
 
-# config :nerves_init_gadget,
-#   ifname: "eth0",
-#   address_method: :dhcp,
-#   mdns_domain: "nerves.local",
-#   node_name: node_name,
-#   node_host: :mdns_domain
-
 config :mdns_lite,
   host: [:hostname, "ocpp_charger_nerves"],
   ttl: 120,
