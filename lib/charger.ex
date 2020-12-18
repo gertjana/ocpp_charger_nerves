@@ -14,7 +14,7 @@ defmodule OcppChargerNerves.Charger do
   # GenServer clients
 
   def start_link(default_state) do
-    GenServer.start_link(__MODULE__, default_state)
+    GenServer.start_link(__MODULE__, default_state, name: :charger)
   end
 
   @spec handle([]) :: []
@@ -25,9 +25,7 @@ defmodule OcppChargerNerves.Charger do
   # GenServer callbacks
 
   @impl GenServer
-  def init(state) do
-    {:ok, state}
-  end
+  def init(state), do: {:ok, state}
 
   @impl GenServer
   def handle_call([2, id, action, payload], _from, state) do
@@ -49,7 +47,6 @@ defmodule OcppChargerNerves.Charger do
     IO.puts "Received error for id #{id}: #{err}, #{desc}, #{det}"
     {:noreply, state}
   end
-
 
   # Charger callbacks
 

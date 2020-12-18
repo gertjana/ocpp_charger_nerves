@@ -5,7 +5,10 @@
 # is restricted to this project.
 use Mix.Config
 
-config :ocpp_charger_nerves, target: Mix.target()
+config :ocpp_charger_nerves,
+  target: Mix.target(),
+  charger_serial: "NC-0001",
+  charger_system_url: "wss://echo.websocket.org"
 
 # Customize non-Elixir parts of the firmware. See
 # https://hexdocs.pm/nerves/advanced-configuration.html for details.

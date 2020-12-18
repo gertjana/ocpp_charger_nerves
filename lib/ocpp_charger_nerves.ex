@@ -2,6 +2,8 @@ defmodule OcppChargerNerves.Application do
   @moduledoc false
 
   alias OcppChargerNerves.Charger
+  alias OcppChargerNerves.Handler
+  alias OcppChargerNerves.WebSocketClient
 
   @target Mix.target()
 
@@ -16,8 +18,10 @@ defmodule OcppChargerNerves.Application do
     main_viewport_config = Application.get_env(:ocpp_charger_nerves, :viewport)
 
     [
-      {Scenic, viewports: [main_viewport_config]},
-      {Charger, [{:serial, "NC-0001"}]}
+      {Charger, [{:serial, Application.get_env(:ocpp_charger_nerves, :charger_serial)}]},
+      {Handler, []},
+      {WebSocketClient, [{:url, Application.get_env(:ocpp_charger_nerves, :charger_system_url)}]},
+      {Scenic, viewports: [main_viewport_config]}
     ]
   end
 
@@ -25,6 +29,9 @@ defmodule OcppChargerNerves.Application do
     main_viewport_config = Application.get_env(:ocpp_charger_nerves, :viewport)
 
     [
+      {Charger, [{:serial, Application.get_env(:ocpp_charger_nerves, :charger_serial)}]},
+      {Handler, []},
+      {WebSocketClient, [{:url, Application.get_env(:ocpp_charger_nerves, :charger_system_url)}]},
       {Scenic, viewports: [main_viewport_config]}
     ]
   end

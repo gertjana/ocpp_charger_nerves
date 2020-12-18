@@ -44,8 +44,8 @@ defmodule OcppChargerNerves.MixProject do
       {:ring_logger, "~> 0.6"},
       {:toolshed, "~> 0.2"},
       {:scenic, "~> 0.10"},
-      {:scenic_sensor, "~> 0.7"},
       {:ocpp_model, path: "../ocpp_model"},
+      {:websockex, "~> 0.4.2"},
 
       # Dependencies for only the :host
       {:scenic_driver_glfw, "~> 0.10", targets: :host},
@@ -53,20 +53,11 @@ defmodule OcppChargerNerves.MixProject do
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.9", targets: @all_targets},
       {:nerves_pack, "~> 0.4.1", targets: @all_targets},
-      #{:nerves_init_gadget, "~> 0.4", targets: @all_targets},
       {:scenic_driver_nerves_rpi, "~> 0.10", targets: @all_targets},
-      {:scenic_driver_nerves_touch, "~> 0.10", targets: @all_targets},
       {:scenic_driver_waveshare, path: "../scenic_driver_waveshare", targets: @all_targets},
 
       # Dependencies for specific targets
-      {:nerves_system_rpi, "~> 1.8", runtime: false, targets: :rpi},
       {:nerves_system_rpi0, "~> 1.8", runtime: false, targets: :rpi0},
-      {:nerves_system_rpi2, "~> 1.8", runtime: false, targets: :rpi2},
-      {:nerves_system_rpi3, "~> 1.8", runtime: false, targets: :rpi3},
-      {:nerves_system_rpi3a, "~> 1.8", runtime: false, targets: :rpi3a},
-      {:nerves_system_rpi4, "~> 1.8", runtime: false, targets: :rpi4},
-      {:nerves_system_bbb, "~> 2.3", runtime: false, targets: :bbb},
-      {:nerves_system_x86_64, "~> 1.8", runtime: false, targets: :x86_64},
     ]
   end
 

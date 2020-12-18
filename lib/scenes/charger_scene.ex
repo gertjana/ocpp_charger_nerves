@@ -3,6 +3,7 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   alias Scenic.Graph
   alias OcppChargerNerves.Charger, as: Charger
   import Scenic.Primitives
+  import Logger
 
   @target System.get_env("MIX_TARGET") || "host"
 
@@ -48,7 +49,8 @@ defmodule OcppChargerNerves.Scene.ChargerScene do
   end
 
   def init(_, _opts) do
-    charger = %Charger{serial: "NC-0001", status: "Available", energy: 0.0, time: "00:00:00", connected: false}
+    serial = Application.get_env(:ocpp_charger_nerves, :charger_serial)
+    charger = %Charger{serial: serial, status: "Available", energy: 0.0, time: "00:00:00", connected: false}
 
     graph = build_graph(charger)
               |> Graph.modify(:device_list, &update_opts(&1, hidden: @target == "host"))
